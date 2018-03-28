@@ -1,0 +1,24 @@
+---
+stages:
+  - build
+  - deploy
+
+variables:
+  CONTAINER_LATEST_IMAGE: registry.metadata.surfcatalog.nl/oom/analyzer:latest
+
+build docker image:
+  stage: build
+  image: docker:latest
+  script:
+    - docker build --pull -t $CONTAINER_LATEST_IMAGE .
+    - docker push $CONTAINER_LATEST_IMAGE
+  tags:
+    - docker-ci-metadata-runner
+
+deploy docker container:
+  stage: deploy
+  script:
+    - ssh deploy@metadata.surfcatalog.nl "sudo docker service update --image $CONTAINER_LATEST_IMAGE analyzer"
+  tags:
+    - shell-ci-metadata-runner
+    
