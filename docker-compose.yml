@@ -1,0 +1,18 @@
+version: '3.3'
+
+services:
+  analyzer:
+    image: ${CONTAINER_LATEST_IMAGE}
+    networks:
+      - web
+    deploy:
+      labels:
+        traefik.docker.network: "web"
+        traefik.frontend.rule: "Host:analyzer.metadata.surfcatalog.nl"
+        traefik.port: 8080
+
+networks:
+  web:
+    external:
+      name: web
+      

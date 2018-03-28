@@ -18,6 +18,6 @@ build docker image:
 deploy docker container:
   stage: deploy
   script:
-    - ssh deploy@metadata.surfcatalog.nl "sudo docker service update --image $CONTAINER_LATEST_IMAGE analyzer"
+    - docker stack deploy --prune --compose-file docker-compose.yml analyzer
   tags:
     - shell-ci-metadata-runner
