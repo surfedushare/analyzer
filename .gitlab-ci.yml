@@ -11,7 +11,7 @@ build docker image:
   image: docker:latest
   script:
     - docker build --pull -t $CONTAINER_LATEST_IMAGE .
-    - docker push --insecure-registry $CONTAINER_LATEST_IMAGE
+    - docker push $CONTAINER_LATEST_IMAGE
   tags:
     - docker-ci-metadata-runner
 
