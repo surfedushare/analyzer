@@ -1,23 +1,41 @@
 ---
 stages:
   - build
+  - release
   - deploy
 
 variables:
-  CONTAINER_LATEST_IMAGE: registry.metadata.surfcatalog.nl/oom/analyzer:latest
+  CONTAINER_TEST_IMAGE: registry.surfedu.nl/edu/analyzer:$CI_COMMIT_SHA
+  CONTAINER_RELEASE_IMAGE: registry.surfedu.nl/edu/analyzer:latest
 
 build docker image:
   stage: build
   image: docker:latest
   script:
-    - docker build --pull -t $CONTAINER_LATEST_IMAGE .
-    - docker push $CONTAINER_LATEST_IMAGE
+    - docker build --pull -t $CONTAINER_TEST_IMAGE .
+    - docker push $CONTAINER_TEST_IMAGE
   tags:
-    - docker-ci-metadata-runner
+    - docker
+  only:
+    - master
 
-deploy docker container:
+release image prod:
+  stage: release
+  image: docker:stable
+  tags:
+    - docker
+  script:
+    - docker pull $CONTAINER_TEST_IMAGE
+    - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
+    - docker push $CONTAINER_RELEASE_IMAGE
+  only:
+    - master
+
+deploy to stack:
   stage: deploy
   script:
-    - docker stack deploy --prune --compose-file docker-compose.yml analyzer
+    - ssh deploy@dev01.swarm.surfedu.nl  "sudo docker service update --image $CONTAINER_RELEASE_IMAGE surfpol-stack_analyzer"
   tags:
-    - shell-ci-metadata-runner
+    - shell
+  only:
+    - master
