@@ -6,7 +6,7 @@ RUN lein deps
 COPY . /usr/src/app
 RUN mv "$(lein uberjar | sed -n 's/^Created \(.*standalone\.jar\)/\1/p')" app-standalone.jar
 
-FROM java:8-alpine
+FROM openjdk:14-alpine
 MAINTAINER Jelmer de Ronde <jelmer.deronde@surfnet.nl>
 
 COPY --from=builder /usr/src/app/app-standalone.jar .
