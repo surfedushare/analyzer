@@ -5,6 +5,7 @@ pom.xml
 pom.xml.asc
 *jar
 *.class
+.cpcache
 
 # Leiningen
 classes/
@@ -35,4 +36,3 @@ repl-port
 # Builds
 out/
 build/
-
