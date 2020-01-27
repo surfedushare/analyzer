@@ -36,7 +36,7 @@ release image prod:
 deploy to stack:
   stage: deploy
   script:
-    - ssh deploy@dev01.swarm.surfedu.nl  "sudo docker service update --image $CONTAINER_RELEASE_IMAGE surfpol-stack_analyzer"
+    - ssh deploy@dev01.swarm.surfedu.nl  "sudo docker service update --with-registry-auth --image $CONTAINER_RELEASE_IMAGE surfpol-stack_analyzer"
   tags:
     - shell
   only:
