@@ -1,16 +1,14 @@
 (ns analyzer.service
-  (:require [clojure.java.io :as io]
-            [pantomime.mime :as p]
+  (:require [pantomime.mime :as p]
             [pantomime.extract :as pextract]
             [cheshire.core :as json]
             [io.pedestal.http :as http]
-            [io.pedestal.http.route :as route]
             [io.pedestal.http.body-params :as body-params]
             [io.pedestal.http.ring-middlewares :as middlewares]
             [ring.util.response :as ring-resp]))
 
 (defn home-page
-  [request]
+  [_]
   (ring-resp/response "ok"))
 
 (defn analyze
@@ -21,8 +19,8 @@
 
 (defn upload
   [request]
-  (let [[in file-name] ((juxt :tempfile :filename)
-                        (-> request :params (get "file")))]
+  (let [[in _] ((juxt :tempfile :filename
+                      (-> request :params (get "file"))))]
     {:status 200
      :headers {"Content-Type" "application/json"}
      :body (json/generate-string (analyze in))}))
@@ -46,4 +44,3 @@
               ::http/container-options {:h2c? true
                                         :h2? false
                                         :ssl? false}})
-
