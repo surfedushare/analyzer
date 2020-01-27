@@ -12,6 +12,7 @@ build docker image:
   stage: build
   image: docker:latest
   script:
+    - docker login --username $CI_REGISTRY_USER --password $CI_REGISTRY_PASS registry.surfedu.nl
     - docker build --pull -t $CONTAINER_TEST_IMAGE .
     - docker push $CONTAINER_TEST_IMAGE
   tags:
@@ -25,6 +26,7 @@ release image prod:
   tags:
     - docker
   script:
+    - docker login --username $CI_REGISTRY_USER --password $CI_REGISTRY_PASS registry.surfedu.nl
     - docker pull $CONTAINER_TEST_IMAGE
     - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
     - docker push $CONTAINER_RELEASE_IMAGE
