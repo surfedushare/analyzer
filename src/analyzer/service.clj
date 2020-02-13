@@ -19,8 +19,8 @@
 
 (defn upload
   [request]
-  (let [[in _] ((juxt :tempfile :filename
-                      (-> request :params (get "file"))))]
+  (let [[in _] ((juxt :tempfile :filename)
+                (-> request :params (get "file")))]
     {:status 200
      :headers {"Content-Type" "application/json"}
      :body (json/generate-string (analyze in))}))
