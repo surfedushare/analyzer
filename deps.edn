@@ -10,7 +10,9 @@
         org.slf4j/jul-to-slf4j          {:mvn/version "1.7.30"}
         org.slf4j/log4j-over-slf4j      {:mvn/version "1.7.30"}
 
-        com.novemberain/pantomime       {:mvn/version "2.11.0"}
+        com.novemberain/pantomime       {:mvn/version "2.11.0"
+                                         :exclusions [org.apache.tika/tika-parsers]}
+        org.apache.tika/tika-parsers    {:mvn/version "1.24.1"}
         cheshire                        {:mvn/version "5.9.0"}}
 
  :aliases {:dev {:extra-deps {io.pedestal/pedestal.service-tools {:mvn/version "0.5.7"}}}
