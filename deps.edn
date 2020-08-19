@@ -2,8 +2,8 @@
 
  :deps {org.clojure/clojure             {:mvn/version "1.10.1"}
 
-        io.pedestal/pedestal.service    {:mvn/version "0.5.7"}
-        io.pedestal/pedestal.jetty      {:mvn/version "0.5.7"}
+        io.pedestal/pedestal.service    {:mvn/version "0.5.8"}
+        io.pedestal/pedestal.jetty      {:mvn/version "0.5.8"}
 
         ch.qos.logback/logback-classic  {:mvn/version "1.2.3"}
         org.slf4j/jcl-over-slf4j        {:mvn/version "1.7.30"}
@@ -13,7 +13,7 @@
         com.novemberain/pantomime       {:mvn/version "2.11.0"
                                          :exclusions [org.apache.tika/tika-parsers]}
         org.apache.tika/tika-parsers    {:mvn/version "1.24.1"}
-        cheshire                        {:mvn/version "5.9.0"}}
+        cheshire                        {:mvn/version "5.10.0"}}
 
  :aliases {:dev {:extra-deps {io.pedestal/pedestal.service-tools {:mvn/version "0.5.7"}}}
            :depstar {:extra-deps {seancorfield/depstar {:mvn/version "0.5.2"}}}}}
