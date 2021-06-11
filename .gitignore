@@ -34,3 +34,5 @@ repl-port
 # Builds
 out/
 build/
+
+.lsp
