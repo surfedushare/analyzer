@@ -46,8 +46,20 @@
      :body "Missing url. Make sure you send a json body with a \"url\" key."}))
 
 
+(def error-interceptor
+  {:name ::error-handler
+   :error (fn [ctx ex]
+            (let [data (ex-data ex)]
+              (assoc ctx :response
+                     {:status 500
+                      :headers {"Content-Type" "application/json"}
+                      :body (-> data
+                                (dissoc :exception)
+                                (assoc :message (.getMessage (:exception data)))
+                                (json/generate-string))})))})
+
 (def common-interceptors [(body-params/body-params) http/html-body])
-(def upload-interceptors [(middlewares/multipart-params) (body-params/body-params) http/html-body])
+(def upload-interceptors [error-interceptor (middlewares/multipart-params) (body-params/body-params) http/html-body])
 
 ;; Tabular routes
 (def routes #{["/" :get (conj common-interceptors `home-page)]
