@@ -61,7 +61,7 @@
               ::http/resource-path "/public"
               ::http/type :jetty
               ::http/host "0.0.0.0"
-              ::http/port 8080
+              ::http/port 9090
               ::http/container-options {:h2c? true
                                         :h2? false
                                         :ssl? false}})
