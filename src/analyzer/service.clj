@@ -10,7 +10,7 @@
 
 (defn valid-url?
   [url-str]
-  (let [default-validator (UrlValidator.)]
+  (let [default-validator (UrlValidator. UrlValidator/ALLOW_LOCAL_URLS)]
     (.isValid default-validator url-str)))
 
 (defn home-page
@@ -22,8 +22,6 @@
   (merge
     {:mime-type (p/mime-type-of file-or-url)}
     (pextract/parse file-or-url)))
-
-(analyze-file-or-url "https://www.youtube.com/watch?v=13cmHf_kt-Q")
 
 (defn upload-file
   [request]
