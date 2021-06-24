@@ -5,7 +5,8 @@
             [io.pedestal.http :as http]
             [io.pedestal.http.body-params :as body-params]
             [io.pedestal.http.ring-middlewares :as middlewares]
-            [ring.util.response :as ring-resp])
+            [ring.util.response :as ring-resp]
+            [io.pedestal.interceptor.error :refer [error-dispatch]])
   (:import [org.apache.commons.validator.routines UrlValidator]))
 
 (defn valid-url?
@@ -31,6 +32,12 @@
      :headers {"Content-Type" "application/json"}
      :body (json/generate-string (analyze-file-or-url in))}))
 
+(defn error-response
+  [status error-map]
+  {:status status
+   :headers {"Content-Type" "application/json"}
+   :body (json/generate-string error-map)})
+
 (defn analyze-url
   [request]
   (if-let [url (-> request :json-params :url)]
@@ -38,25 +45,32 @@
       {:status 200
        :headers {"Content-Type" "application/json"}
        :body (json/generate-string (analyze-file-or-url url))}
-      {:status 400
-       :headers {"Content-Type" "text/plain"}
-       :body "The supplied url is not a valid url."})
-    {:status 400
-     :headers {"Content-Type" "text/plain"}
-     :body "Missing url. Make sure you send a json body with a \"url\" key."}))
+      (error-response 400 {:message "The supplied url is not a valid url."}))
+    (error-response 400 {:message "Missing url. Make sure you send a json body with a \"url\" key."})))
 
+(defn ex->error-map
+  [ex]
+  (let [data (ex-data ex)]
+    (-> data
+        (dissoc :exception)
+        (dissoc :interceptor)
+        (assoc :message (.getMessage (:exception data))))))
 
 (def error-interceptor
-  {:name ::error-handler
-   :error (fn [ctx ex]
-            (let [data (ex-data ex)]
-              (assoc ctx :response
-                     {:status 500
-                      :headers {"Content-Type" "application/json"}
-                      :body (-> data
-                                (dissoc :exception)
-                                (assoc :message (.getMessage (:exception data)))
-                                (json/generate-string))})))})
+  (error-dispatch
+   [ctx ex]
+
+   [{:exception-type :java.io.FileNotFoundException}]
+   (assoc ctx :response
+          (error-response 400 (ex->error-map ex)))
+
+   [{:exception-type :java.net.ConnectException}]
+   (assoc ctx :response
+          (error-response 400 (ex->error-map ex)))
+
+   :else
+   (assoc ctx :respons
+          (error-response 500 (ex->error-map ex)))))
 
 (def common-interceptors [(body-params/body-params) http/html-body])
 (def upload-interceptors [error-interceptor (middlewares/multipart-params) (body-params/body-params) http/html-body])

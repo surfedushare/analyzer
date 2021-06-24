@@ -36,3 +36,5 @@ out/
 build/
 
 .lsp
+
+.clj-kondo/.cache
