@@ -4,16 +4,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Docker Build
-      run: docker build . --file Dockerfile --tag analyzer:test
-    - uses: anchore/scan-action@v1
+      run: docker build . --file Dockerfile --tag localbuild/analyzer:latest
+    - uses: anchore/scan-action@v3
+      id: scan
       with:
-        image-reference: "analyzer:test"
-        dockerfile-path: "./Dockerfile"
+        image: "localbuild/analyzer:latest"
         fail-build: false
-    - name: Upload artifact
-      uses: actions/upload-artifact@v1.0.0
+        acs-report-enable: true
+    - name: upload Anchore scan SARIF report
+      uses: github/codeql-action/upload-sarif@v1
       with:
-        name: AnchoreReports
-        path: ./anchore-reports/
+        sarif_file: ${{ steps.scan.outputs.sarif }}
