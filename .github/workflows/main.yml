@@ -1,0 +1,19 @@
+name: Anchore Scan
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Docker Build
+      run: docker build . --file Dockerfile --tag analyzer:test
+    - uses: anchore/scan-action@v1
+      with:
+        image-reference: "analyzer:test"
+        dockerfile-path: "./Dockerfile"
+        fail-build: false
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: AnchoreReports
+        path: ./anchore-reports/

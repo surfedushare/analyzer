@@ -2,8 +2,8 @@
 
  :deps {org.clojure/clojure                 {:mvn/version "1.10.3"}
 
-        io.pedestal/pedestal.service        {:mvn/version "0.5.9"}
-        io.pedestal/pedestal.jetty          {:mvn/version "0.5.9"}
+        io.pedestal/pedestal.service        {:mvn/version "0.5.10"}
+        io.pedestal/pedestal.jetty          {:mvn/version "0.5.10"}
 
         ch.qos.logback/logback-classic      {:mvn/version "1.2.3"}
         org.slf4j/jcl-over-slf4j            {:mvn/version "1.7.30"}
@@ -11,10 +11,18 @@
         org.slf4j/log4j-over-slf4j          {:mvn/version "1.7.30"}
 
         com.novemberain/pantomime           {:mvn/version "2.11.0"
-                                             :exclusions  [org.apache.tika/tika-parsers]}
-        org.apache.tika/tika-parsers        {:mvn/version "1.26"}
+                                             :exclusions  [org.apache.tika/tika-parsers
+                                                           org.apache.commons/commons-compress
+                                                           com.google.protobuf/protobuf-java]}
+        com.google.protobuf/protobuf-java   {:mvn/version "3.16.1"}
+        org.apache.tika/tika-parsers        {:mvn/version "1.28"}
         commons-validator/commons-validator {:mvn/version "1.7"}
-        cheshire/cheshire                   {:mvn/version "5.10.0"}}
+
+        cheshire/cheshire                   {:mvn/version "5.10.0"}
+        org.apache.commons/commons-compress {:mvn/version "1.21"}}
 
  :aliases {:dev     {:extra-deps {io.pedestal/pedestal.service-tools {:mvn/version "0.5.9"}}}
-           :depstar {:extra-deps {seancorfield/depstar {:mvn/version "2.0.216"}}}}}
+           :depstar {:extra-deps {seancorfield/depstar {:mvn/version "2.0.216"}}}
+           :uberjar {:replace-deps {com.github.seancorfield/depstar {:mvn/version "2.1.303"}}
+                     :exec-fn hf.depstar/uberjar
+                     :exec-args {:aot true}}}}
